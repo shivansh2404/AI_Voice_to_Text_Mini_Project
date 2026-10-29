@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - AI Voice to Text</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Simple Header -->
+  <header class="navbar">
+    <a href="login.html" class="brand">
+      🎙️ AI Voice to Text
+      <span class="brand-badge">Full-Stack</span>
+    </a>
+  </header>
+
+  <!-- Registration Card Container -->
+  <main class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>Create Account</h1>
+        <p>Register to save and manage your voice notes</p>
+      </div>
+
+      <!-- Alert Box for Errors/Messages -->
+      <div id="alertBox" class="alert alert-danger" style="display: none;"></div>
+
+      <form id="registerForm">
+        <!-- Full Name -->
+        <div class="form-group">
+          <label for="regName" class="form-label">Full Name</label>
+          <input
+            type="text"
+            id="regName"
+            class="form-control"
+            placeholder="e.g. Rahul Sharma"
+            required
+            autocomplete="name"
+          >
+        </div>
+
+        <!-- Email Address -->
+        <div class="form-group">
+          <label for="regEmail" class="form-label">Email Address</label>
+          <input
+            type="email"
+            id="regEmail"
+            class="form-control"
+            placeholder="you@example.com"
+            required
+            autocomplete="email"
+          >
+        </div>
+
+        <!-- Password with Show/Hide -->
+        <div class="form-group">
+          <label for="regPassword" class="form-label">Password (Min. 6 characters)</label>
+          <div class="password-wrapper">
+            <input
+              type="password"
+              id="regPassword"
+              class="form-control"
+              placeholder="Create a strong password"
+              minlength="6"
+              required
+              autocomplete="new-password"
+            >
+            <button
+              type="button"
+              id="toggleRegPasswordBtn"
+              class="password-toggle-btn"
+              aria-label="Toggle password visibility"
+            >
+              Show
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label for="regConfirmPassword" class="form-label">Confirm Password</label>
+          <input
+            type="password"
+            id="regConfirmPassword"
+            class="form-control"
+            placeholder="Re-enter your password"
+            minlength="6"
+            required
+            autocomplete="new-password"
+          >
+        </div>
+
+        <!-- Register Button -->
+        <button type="submit" id="registerBtn" class="btn btn-primary btn-block" style="margin-top: 10px;">
+          Register
+        </button>
+      </form>
+
+      <!-- Login Link -->
+      <p style="text-align: center; margin-top: 20px; font-size: 0.875rem; color: var(--text-muted);">
+        Already have an account?
+        <a href="login.html" style="color: var(--primary-blue); font-weight: 600; text-decoration: none;">
+          Log in here
+        </a>
+      </p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    AI Voice to Text &copy; 2026 — Hindi & English Speech Recognition System
+  </footer>
+
+  <script src="auth.js"></script>
+  <script>
+    // Initialize Register Page
+    document.addEventListener('DOMContentLoaded', () => {
+      initRegisterPage();
+    });
+  </script>
+</body>
+</html>
+

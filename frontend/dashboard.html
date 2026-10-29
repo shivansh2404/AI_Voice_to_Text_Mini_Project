@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - AI Voice to Text</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a href="dashboard.html" class="brand">
+      🎙️ AI Voice to Text
+      <span class="brand-badge">Full-Stack</span>
+    </a>
+    <div class="user-nav">
+      <span class="user-greeting">Welcome, <strong id="userDisplayName">User</strong></span>
+      <button id="logoutBtn" class="btn btn-outline btn-sm">Log Out</button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="container">
+    <!-- Unsupported Browser Alert (Hidden unless Web Speech API is absent) -->
+    <div id="unsupportedAlert" class="alert alert-danger" style="display: none;">
+      ⚠️ <strong>Browser Compatibility Notice:</strong> Your current browser does not support the Web Speech API. For full voice-to-text functionality, please open this application in <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>.
+    </div>
+
+    <!-- General Alert Box -->
+    <div id="dashboardAlert" class="alert" style="display: none;"></div>
+
+    <div class="dashboard-grid">
+      <!-- Voice Recognition Workspace Card -->
+      <section class="card">
+        <h2 class="card-title">
+          <span>Voice-to-Text Studio</span>
+          <span id="recordingStatus" class="status-badge">
+            <span class="status-dot"></span>
+            <span id="statusText">Ready</span>
+          </span>
+        </h2>
+
+        <!-- Controls: Language & Recording Buttons -->
+        <div class="controls-bar">
+          <div class="controls-left">
+            <!-- Language Selector (English & Hindi only) -->
+            <div class="language-select-wrapper">
+              <label for="languageSelect">Language:</label>
+              <select id="languageSelect" class="select-control">
+                <option value="en-IN" selected>English (India) - en-IN</option>
+                <option value="hi-IN">Hindi (हिन्दी) - hi-IN</option>
+              </select>
+            </div>
+
+            <!-- Start / Stop Recording Buttons -->
+            <button id="startRecordBtn" class="btn btn-primary">
+              <span id="micIcon">🎙️</span> Start Recording
+            </button>
+            <button id="stopRecordBtn" class="btn btn-outline" disabled>
+              ⏹️ Stop Recording
+            </button>
+          </div>
+        </div>
+
+        <!-- Editable Speech Text Area -->
+        <div class="speech-editor-wrapper">
+          <textarea
+            id="speechTextarea"
+            class="speech-textarea"
+            placeholder="Click 'Start Recording' and begin speaking in English or Hindi, or type your notes directly here..."
+          ></textarea>
+          <div class="textarea-footer">
+            <span>Editable workspace: You can edit or refine text before saving.</span>
+            <span id="textCounters">Words: 0 | Characters: 0</span>
+          </div>
+        </div>
+
+        <!-- Primary Action Toolbar -->
+        <div class="action-toolbar">
+          <button id="saveTextBtn" class="btn btn-primary" title="Save this note permanently to MongoDB">
+            💾 Save Text
+          </button>
+          <button id="copyTextBtn" class="btn btn-outline" title="Copy recognized text to clipboard">
+            📋 Copy Text
+          </button>
+          <button id="downloadTextBtn" class="btn btn-outline" title="Download text as a .txt file">
+            📥 Download Text (.txt)
+          </button>
+          <button id="clearTextBtn" class="btn btn-outline" title="Clear current workspace text">
+            🧹 Clear Text
+          </button>
+        </div>
+      </section>
+
+      <!-- Saved Notes Management Section (Loaded from MongoDB) -->
+      <section class="card">
+        <div class="card-title">
+          <div>
+            <span>Saved Notes in MongoDB</span>
+            <span id="notesCountBadge" class="brand-badge" style="margin-left: 8px;">0 Notes</span>
+          </div>
+          <button id="refreshNotesBtn" class="btn btn-outline btn-sm">
+            🔄 Refresh Notes
+          </button>
+        </div>
+
+        <!-- Notes Table Container -->
+        <div class="notes-table-container">
+          <table class="notes-table" id="notesTable">
+            <thead>
+              <tr>
+                <th style="width: 35%;">Title</th>
+                <th style="width: 15%;">Language</th>
+                <th style="width: 20%;">Saved On</th>
+                <th style="width: 30%;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="notesTableBody">
+              <!-- Dynamically populated from MongoDB -->
+            </tbody>
+          </table>
+
+          <!-- Empty State -->
+          <div id="emptyNotesState" class="empty-state" style="display: none;">
+            <p style="font-size: 1.5rem;">📝</p>
+            <p><strong>No saved notes found yet.</strong></p>
+            <p style="font-size: 0.85rem;">Record speech or type text above, then click <strong>Save Text</strong> to store your first note in MongoDB.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Save / Edit Modal Popup -->
+  <div id="noteModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modalTitle">Save Note to MongoDB</h3>
+        <button id="modalCloseBtn" class="modal-close-btn">&times;</button>
+      </div>
+      <form id="noteModalForm">
+        <input type="hidden" id="modalNoteId" value="">
+        <div class="form-group">
+          <label for="modalNoteTitle" class="form-label">Note Title</label>
+          <input
+            type="text"
+            id="modalNoteTitle"
+            class="form-control"
+            placeholder="Enter a descriptive title (e.g. Hindi Lecture Notes)"
+            required
+            maxlength="120"
+          >
+        </div>
+        <div class="form-group">
+          <label for="modalNoteLanguage" class="form-label">Language</label>
+          <select id="modalNoteLanguage" class="select-control" style="width: 100%;">
+            <option value="en-IN">English (India) - en-IN</option>
+            <option value="hi-IN">Hindi (हिन्दी) - hi-IN</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="modalNoteText" class="form-label">Note Content</label>
+          <textarea
+            id="modalNoteText"
+            class="form-control"
+            style="min-height: 120px; font-family: inherit; font-size: 0.95rem;"
+            required
+          ></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="modalCancelBtn" class="btn btn-outline">Cancel</button>
+          <button type="submit" id="modalSubmitBtn" class="btn btn-primary">Save to MongoDB</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Message -->
+  <div id="toastNotification" class="toast">
+    <span id="toastIcon">✅</span>
+    <span id="toastMessage">Action completed successfully</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    AI Voice to Text &copy; 2026 — Built with Node.js, Express, MongoDB & Web Speech API
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+

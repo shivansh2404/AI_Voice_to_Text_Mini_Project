@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - AI Voice to Text</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Simple Header -->
+  <header class="navbar">
+    <a href="login.html" class="brand">
+      🎙️ AI Voice to Text
+      <span class="brand-badge">Full-Stack</span>
+    </a>
+  </header>
+
+  <!-- Login Card Container -->
+  <main class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>Welcome Back</h1>
+        <p>Log in to access your voice notes dashboard</p>
+      </div>
+
+      <!-- Alert Box for Errors/Messages -->
+      <div id="alertBox" class="alert alert-danger" style="display: none;"></div>
+
+      <form id="loginForm">
+        <!-- Email Input -->
+        <div class="form-group">
+          <label for="loginEmail" class="form-label">Email Address</label>
+          <input
+            type="email"
+            id="loginEmail"
+            class="form-control"
+            placeholder="you@example.com"
+            required
+            autocomplete="email"
+          >
+        </div>
+
+        <!-- Password Input with Show/Hide -->
+        <div class="form-group">
+          <label for="loginPassword" class="form-label">Password</label>
+          <div class="password-wrapper">
+            <input
+              type="password"
+              id="loginPassword"
+              class="form-control"
+              placeholder="Enter your password"
+              required
+              autocomplete="current-password"
+            >
+            <button
+              type="button"
+              id="togglePasswordBtn"
+              class="password-toggle-btn"
+              aria-label="Toggle password visibility"
+            >
+              Show
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="loginBtn" class="btn btn-primary btn-block" style="margin-top: 10px;">
+          Log In
+        </button>
+      </form>
+
+      <!-- Registration Link -->
+      <p style="text-align: center; margin-top: 20px; font-size: 0.875rem; color: var(--text-muted);">
+        Don't have an account?
+        <a href="register.html" style="color: var(--primary-blue); font-weight: 600; text-decoration: none;">
+          Create an account
+        </a>
+      </p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    AI Voice to Text &copy; 2026 — Hindi & English Speech Recognition System
+  </footer>
+
+  <script src="auth.js"></script>
+  <script>
+    // Initialize Login Page
+    document.addEventListener('DOMContentLoaded', () => {
+      initLoginPage();
+    });
+  </script>
+</body>
+</html>
+

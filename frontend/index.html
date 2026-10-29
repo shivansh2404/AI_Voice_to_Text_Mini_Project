@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Voice to Text</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; height: 100vh;">
+  <div style="text-align: center;">
+    <h2>AI Voice to Text</h2>
+    <p style="color: var(--text-muted); margin-top: 8px;">Checking session, please wait...</p>
+  </div>
+
+  <script>
+    // Check if session is already active
+    const API_BASE = window.location.port === '5000'
+      ? ''
+      : `http://${window.location.hostname}:5000`;
+    fetch(`${API_BASE}/api/auth/me`, { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.user) {
+          window.location.replace('dashboard.html');
+        } else {
+          window.location.replace('login.html');
+        }
+      })
+      .catch(() => {
+        window.location.replace('login.html');
+      });
+  </script>
+</body>
+</html>
+
